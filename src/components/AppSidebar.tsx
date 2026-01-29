@@ -11,6 +11,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
     useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -28,11 +31,15 @@ import {
     BarChart3,
     Bell,
     Settings,
-    ShieldAlert
+    ShieldAlert,
+    ChevronRight,
+    Smartphone,
+    Building2
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const sidebarItems = [
     { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -41,11 +48,19 @@ const sidebarItems = [
     { title: "Players", url: "/players", icon: Users },
     { title: "Organizers", url: "/organizers", icon: Briefcase },
     { title: "Guilds / Teams", url: "/guilds", icon: Shield },
-    { title: "Finance", url: "#", icon: CreditCard },
+    { title: "Finance", url: "/finance", icon: CreditCard },
     { title: "Disputes & Reports", url: "#", icon: Flag },
     { title: "Analytics", url: "#", icon: BarChart3 },
-    { title: "Notifications", url: "#", icon: Bell },
-    { title: "Settings", url: "#", icon: Settings },
+    {
+        title: "Notifications",
+        url: "#",
+        icon: Bell,
+        subItems: [
+            { title: "Corpse App", url: "/notifications/app", icon: Smartphone },
+            { title: "Organizer App", url: "/notifications/organizer", icon: Building2 },
+        ]
+    },
+    { title: "Settings", url: "/settings", icon: Settings },
     { title: "Admin Tools", url: "#", icon: ShieldAlert },
 ];
 
@@ -85,17 +100,51 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {sidebarItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        tooltip={item.title}
-                                        isActive={pathname === item.url}
-                                        className="data-[active=true]:bg-gradient-to-r data-[active=true]:from-brand-red/10 data-[active=true]:to-transparent data-[active=true]:text-white data-[active=true]:shadow-[inset_2px_0_0_0_#D7333A] hover:bg-white/5 hover:text-white transition-all duration-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2 relative overflow-hidden"
-                                    >
-                                        <Link href={item.url} className="flex items-center gap-2 w-full relative z-10">
-                                            <item.icon className="h-4 w-4 shrink-0" />
-                                            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
+                                    {item.subItems ? (
+                                        <Collapsible defaultOpen={item.subItems.some(sub => pathname === sub.url)} className="group/collapsible">
+                                            <CollapsibleTrigger asChild>
+                                                <SidebarMenuButton
+                                                    tooltip={item.title}
+                                                    isActive={pathname.startsWith('/notifications')}
+                                                    className="w-full data-[active=true]:text-brand-red hover:bg-white/5 hover:text-white transition-all duration-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2"
+                                                >
+                                                    <item.icon className="h-4 w-4 shrink-0" />
+                                                    <span className="group-data-[collapsible=icon]:hidden flex-1 text-left">{item.title}</span>
+                                                    <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
+                                                </SidebarMenuButton>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent>
+                                                <SidebarMenuSub className="border-l border-white/5 ml-4 pl-2 group-data-[collapsible=icon]:hidden">
+                                                    {item.subItems.map((subItem) => (
+                                                        <SidebarMenuSubItem key={subItem.title}>
+                                                            <SidebarMenuSubButton
+                                                                asChild
+                                                                isActive={pathname === subItem.url}
+                                                                className="text-zinc-500 hover:text-white data-[active=true]:text-brand-red"
+                                                            >
+                                                                <Link href={subItem.url} className="flex items-center gap-2">
+                                                                    {subItem.icon && <subItem.icon className="h-3.5 w-3.5" />}
+                                                                    <span>{subItem.title}</span>
+                                                                </Link>
+                                                            </SidebarMenuSubButton>
+                                                        </SidebarMenuSubItem>
+                                                    ))}
+                                                </SidebarMenuSub>
+                                            </CollapsibleContent>
+                                        </Collapsible>
+                                    ) : (
+                                        <SidebarMenuButton
+                                            asChild
+                                            tooltip={item.title}
+                                            isActive={pathname === item.url}
+                                            className="data-[active=true]:bg-gradient-to-r data-[active=true]:from-brand-red/10 data-[active=true]:to-transparent data-[active=true]:text-white data-[active=true]:shadow-[inset_2px_0_0_0_#D7333A] hover:bg-white/5 hover:text-white transition-all duration-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2 relative overflow-hidden"
+                                        >
+                                            <Link href={item.url} className="flex items-center gap-2 w-full relative z-10">
+                                                <item.icon className="h-4 w-4 shrink-0" />
+                                                <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    )}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
@@ -110,5 +159,3 @@ export function AppSidebar() {
         </Sidebar >
     );
 }
-
-
