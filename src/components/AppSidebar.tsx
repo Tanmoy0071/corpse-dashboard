@@ -50,7 +50,7 @@ const sidebarItems = [
     { title: "Guilds / Teams", url: "/guilds", icon: Shield },
     { title: "Finance", url: "/finance", icon: CreditCard },
     { title: "Disputes & Reports", url: "#", icon: Flag },
-    { title: "Analytics", url: "#", icon: BarChart3 },
+    // { title: "Analytics", url: "#", icon: BarChart3 },
     {
         title: "Notifications",
         url: "#",
